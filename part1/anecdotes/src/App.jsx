@@ -22,28 +22,36 @@ const App = () => {
 
   let votesArray = new Uint8Array(anecdotes.length); 
 
-
-
   const [selected, setSelected] = useState(0)
   const [votes,setVotes] = useState(votesArray)
+  const [mostVotes, setMostVotes] = useState(0)
 
-  const handleRandomClick = () => {
-    return setSelected( Math.floor(Math.random() * anecdotes.length))
-  }
+  const handleRandomClick = () => {return setSelected( Math.floor(Math.random() * anecdotes.length))}
 
   const handleVoteClick = () => {
+    let mostVotes = 0
     const copy = [...votes]
     copy[selected] += 1
+    for (let i = 0; i < copy.length; i++) {
+      if (copy[i] > mostVotes){ 
+        mostVotes = copy[i]
+        setMostVotes(i)
+      }
+    }
+
     return setVotes(copy)
   
   }
 
   return (
     <div>
+      <h2>Anecdote of the Day</h2>
       <p>{anecdotes[selected]}</p>
       <p>has {votes[selected]} votes</p>
       <Button handleClick={handleVoteClick} text={"vote"}/>
       <Button handleClick={handleRandomClick} text={"next anecdote"}/>
+      <h2>Anecdote with the most votes</h2>
+      <p>{anecdotes[mostVotes]}</p>
     </div>
   )
 }
