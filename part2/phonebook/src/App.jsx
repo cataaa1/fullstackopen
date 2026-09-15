@@ -17,9 +17,21 @@ const App = () => {
       name: newName
     }
 
-    setPersons(persons.concat(personObject))
+    let bool = false
+
+    for(let i=0;i<persons.length;i++){
+      if (persons[i].name === newName){
+        bool = true
+    }
+    }
+      if (bool)
+        window.alert(newName + ' is already added to phonebook')
+      else
+        setPersons(persons.concat(personObject))
+  
     setNewName('')
   }
+
 
   return (
     <div>
@@ -39,5 +51,6 @@ const App = () => {
     </div>
   )
 }
+
 
 export default App
