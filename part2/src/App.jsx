@@ -12,6 +12,7 @@ const App = (props) => {
     console.log(event.target.value)
     setNewNote(event.target.value)
   }
+  
 
   const addNote = (event) => {
     event.preventDefault()
