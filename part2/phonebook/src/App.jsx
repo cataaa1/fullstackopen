@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
+import phonebookService from "./services/phonebook";
 
-const Filter = ({showAll,handleFilterChange}) => (
+const Filter = ({ showAll, handleFilterChange }) => (
   <>filter shown with: <input value={showAll} onChange={handleFilterChange}/></>
 );
 
-const PersonForm = ({addPerson,newName,handleNameChange,newNumber,handleNumberChange}) => (
+const PersonForm = ({ addPerson, newName, handleNameChange, newNumber, handleNumberChange }) => (
   <form onSubmit={addPerson}>
     <div>
       name: <input value={newName} onChange={handleNameChange} />
@@ -17,23 +17,19 @@ const PersonForm = ({addPerson,newName,handleNameChange,newNumber,handleNumberCh
       <button type="submit">add</button>
     </div>
   </form>
-
 );
 
-const Persons = ({filterName}) => (
+const Persons = ({ filterName }) => (
   <>
-  {filterName.map((person) => (
-     <div key={person.name}>
-     {person.name} {person.number}
-   </div>
-  ))}
+    {filterName.map((person) => (
+      <div key={person.id || person.name}>
+        {person.name} {person.number}
+      </div>
+    ))}
   </>
 );
 
-
-
 const App = () => {
-  
   const [persons, setPersons] = useState([]) 
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
@@ -43,46 +39,49 @@ const App = () => {
   const handleNumberChange = (event) => setNewNumber(event.target.value)
   const handleFilterChange = (event) => setShowAll(event.target.value)
   
-  useEffect(() => {
-    axios
-      .get('http://localhost:3001/persons')
-      .then(response => {
-        setPersons(response.data)
-      })
-  }, [])
   
-  useEffect(hook, [])
+  useEffect(() => {
+    phonebookService.getAll().then((initialPerson) => {
+      setPersons(initialPerson)
+    })
+  }, [])
 
   const addPerson = (event) => {
     event.preventDefault()
     
+
+
     const nameExists = persons.some(person => person.name.toLowerCase() === newName.trim().toLowerCase())
 
-      if (nameExists)
-        window.alert(newName + ' is already added to phonebook')
-      else{
-        const personObject = {
-          name: newName,
-          number: newNumber
-        }
-        setPersons(persons.concat(personObject))
+    if (nameExists) {
+      window.alert(`${newName} is already added to phonebook`)
+    } else {
+      const personObject = {
+        name: newName,
+        number: newNumber
+      }
+
+      phonebookService.create(personObject).then((returnedPerson) => {
+        setPersons(persons.concat(returnedPerson))
         setNewName('')
         setNewNumber('')
       }
-   
+      )
+
+       
+    }
   }
 
-  const filterName = showAll === '' ? persons: persons.filter(person => person.name.toLowerCase().includes(showAll.toLowerCase()))
-
+  const filterName = showAll === '' 
+    ? persons 
+    : persons.filter(person => person.name.toLowerCase().includes(showAll.toLowerCase()))
 
   return (
     <div>
       <h2>Phonebook</h2>
-     
       <Filter showAll={showAll} handleFilterChange={handleFilterChange}/>
 
       <h2>Add a new number</h2>
-      
       <PersonForm
         addPerson={addPerson}
         newName={newName}
@@ -92,12 +91,9 @@ const App = () => {
       />
 
       <h2>Numbers</h2>
-
       <Persons filterName={filterName}/>
-      
     </div>
   )
 }
-
 
 export default App
