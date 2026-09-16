@@ -19,15 +19,19 @@ const PersonForm = ({ addPerson, newName, handleNameChange, newNumber, handleNum
   </form>
 );
 
-const Persons = ({ filterName }) => (
+
+const Persons = ({ filterName, handleDelete }) => (
   <>
     {filterName.map((person) => (
       <div key={person.id || person.name}>
-        {person.name} {person.number}
+        {person.name} {person.number} 
+        <button onClick ={() => handleDelete(person.id,person.name)}>delete</button>
       </div>
     ))}
   </>
 );
+
+
 
 const App = () => {
   const [persons, setPersons] = useState([]) 
@@ -45,6 +49,16 @@ const App = () => {
       setPersons(initialPerson)
     })
   }, [])
+
+  const handleDeleteOf = (id,name) => {
+    if (window.confirm(`Delete ${name}?`)){
+      phonebookService
+      .remove(id)
+      .then(() => {
+        setPersons(persons.filter(person => person.id !== id))
+      })
+    }
+  }
 
   const addPerson = (event) => {
     event.preventDefault()
@@ -91,7 +105,7 @@ const App = () => {
       />
 
       <h2>Numbers</h2>
-      <Persons filterName={filterName}/>
+      <Persons filterName={filterName} handleDelete={handleDeleteOf}/>
     </div>
   )
 }
