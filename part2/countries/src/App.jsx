@@ -1,14 +1,14 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios'
 
-const CountryContent = ({countries}) => {
+const CountryContent = ({countries,handleShowInformation}) => {
   if (countries.length > 10)
     return <p>Too many matches, specify another filter</p>
   if (countries.length > 1){
     return (
     <ul>
       {countries.map(country => (
-        <li key={country.cca3}>{country.name.common}</li>
+        <li key={country.cca3}>{country.name.common} <button type={'button'} onClick={() => handleShowInformation(country.name.common)}>Show</button></li>
       ))}
     </ul>
     ) 
@@ -39,6 +39,10 @@ const App = () => {
   const [searchText,setSearchText] = useState('')
   const [countryList,setCountryList] = useState([])
 
+  const handleShowInformation = (countryName) => {
+    setSearchText(countryName)
+  }
+
   useEffect(() => {
     console.log('effect run, fetching countries')
     axios
@@ -60,7 +64,10 @@ const App = () => {
     <div>
 
       find countries: <input value={searchText} onChange={handleSearchChange}/>
-      <CountryContent countries={countriesToFilter}/>
+      <CountryContent 
+      countries={countriesToFilter}
+      handleShowInformation={handleShowInformation}
+      />
       
     </div>
   )
