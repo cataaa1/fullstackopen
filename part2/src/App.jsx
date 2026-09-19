@@ -79,6 +79,9 @@ const App = () => {
     setNewNote(event.target.value)
   }
 
+  if (!notes)
+    return null
+  
   const notesToShow = showAll ? notes : notes.filter((note) => note.important)
 
   return (
