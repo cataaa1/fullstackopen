@@ -1,8 +1,7 @@
 # Dependencias
 node_modules/
 
-# Builds generados
-dist/
+
 
 # Variables de entorno
 .env

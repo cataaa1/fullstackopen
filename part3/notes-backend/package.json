@@ -1,0 +1,20 @@
+{
+  "name": "noteapp",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js",
+    "build:ui": "node -e \"require('fs').rmSync('dist',{recursive:true,force:true})\" && npm run build --prefix ../../part2/notes-frontend && node -e \"require('fs').cpSync('../../part2/notes-frontend/dist','dist',{recursive:true})\""
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.6",
+    "express": "^4.17.3"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.15"
+  }
+}
