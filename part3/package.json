@@ -8,9 +8,8 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
-    "dev": "nodemon index.js",
-    "build:ui": "rimraf dist && npm run build --prefix ../part2 && copyfiles -u 3 ../part2/dist/**/* dist",
-    "deploy:full": "npm run build:ui && git add . && git commit -m \"uibuild\" && git push"
+    "dev": "node --watch index.js",
+    "build:ui": "node -e \"require('fs').rmSync('dist',{recursive:true,force:true})\" && npm run build --prefix ../part2 && node -e \"require('fs').cpSync('../part2/dist','dist',{recursive:true})\""
   },
   "dependencies": {
     "cors": "^2.8.6",
