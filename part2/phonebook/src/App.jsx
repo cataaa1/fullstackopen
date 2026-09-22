@@ -92,22 +92,7 @@ const App = () => {
     const existingPerson = persons.find(person => person.name.toLowerCase() === newName.trim().toLowerCase())
 
     if (existingPerson) {
-      if (window.confirm(`${newName} is already added to phonebook, replace the old number with a new one?`)){
-        const updatedPerson = { ...existingPerson, number: newNumber }
-       
-        phonebookService
-        .update(existingPerson.id, updatedPerson)
-        .then(returnedPerson => {
-        setPersons(persons.map(person => person.id !== existingPerson.id ? person : returnedPerson))
-        setNewName('')
-        setNewNumber('')
-        notify(`Updated ${returnedPerson.name}'s number`, 'success')
-        })
-        .catch(() => {
-          notify(`Information of ${existingPerson.name} has already been removed from server`, 'error')
-          setPersons(persons.filter(p => p.id !== existingPerson.id))
-        })
-      }
+      alert(`${newName} is already added to phonebook`)
     } else {
       const personObject = {
         name: newName,
