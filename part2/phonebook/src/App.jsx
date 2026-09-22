@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import phonebookService from "./services/phonebook";
+import phonebookService from "./services/phonebook.js";
 import './index.css'
 
 const Filter = ({ showAll, handleFilterChange }) => (
@@ -88,28 +88,54 @@ const App = () => {
 
   const addPerson = (event) => {
     event.preventDefault()
-    
-    const existingPerson = persons.find(person => person.name.toLowerCase() === newName.trim().toLowerCase())
-
+  
+    const existingPerson = persons.find(
+      person =>
+        person.name.toLowerCase() === newName.trim().toLowerCase()
+    )
+  
     if (existingPerson) {
-      alert(`${newName} is already added to phonebook`)
-    } else {
-      const personObject = {
-        name: newName,
-        number: newNumber
+      const confirmUpdate = window.confirm(
+        `${newName} is already added to phonebook, replace the old number with a new one?`
+      )
+  
+      if (confirmUpdate) {
+        const updatedPerson = {
+          ...existingPerson,
+          number: newNumber
+        }
+  
+        phonebookService
+          .update(existingPerson.id, updatedPerson)
+          .then(returnedPerson => {
+            setPersons(
+              persons.map(person =>
+                person.id !== existingPerson.id
+                  ? person
+                  : returnedPerson
+              )
+            )
+  
+            setNewName('')
+            setNewNumber('')
+          })
       }
-
-      phonebookService.create(personObject)
-      .then((returnedPerson) => {
+  
+      return
+    }
+  
+    const personObject = {
+      name: newName,
+      number: newNumber
+    }
+  
+    phonebookService
+      .create(personObject)
+      .then(returnedPerson => {
         setPersons(persons.concat(returnedPerson))
         setNewName('')
         setNewNumber('')
-        notify(`Added '${returnedPerson.name}'`, 'success')
       })
-        
-      
-       
-    }
   }
 
   const filterName = showAll === '' ? persons : persons.filter(person => person.name.toLowerCase().includes(showAll.toLowerCase()))

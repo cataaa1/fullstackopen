@@ -73,7 +73,7 @@ app.put('/api/notes/:id',(request,response,next) => {
   }
 
   Note.findByIdAndUpdate(request.params.id, note, {new:true})
-  .then(updateNote => {
+  .then(updatedNote => {
     response.json(updatedNote)
   })
   .catch(error => next(error))
