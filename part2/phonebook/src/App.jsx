@@ -130,12 +130,16 @@ const App = () => {
     }
   
     phonebookService
-      .create(personObject)
-      .then(returnedPerson => {
-        setPersons(persons.concat(returnedPerson))
-        setNewName('')
-        setNewNumber('')
-      })
+  .create(personObject)
+  .then(returnedPerson => {
+    setPersons(persons.concat(returnedPerson))
+    setNewName('')
+    setNewNumber('')
+    notify(`Added '${returnedPerson.name}'`, 'success')
+  })
+  .catch(error => {
+    notify(error.response.data.error, 'error')
+  })
   }
 
   const filterName = showAll === '' ? persons : persons.filter(person => person.name.toLowerCase().includes(showAll.toLowerCase()))
